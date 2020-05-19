@@ -248,7 +248,7 @@ def crypto_scalarmult_base(sk):
     return pk.raw
 
 
-def crypto_scalarmult(p, sk):
+def crypto_scalarmult(pk, sk):
     '''
     Compute a shared secret given a user's secret key and another user's public key.
     '''
