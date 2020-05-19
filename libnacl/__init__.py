@@ -248,7 +248,7 @@ def crypto_scalarmult_base(sk):
     return pk.raw
 
 
-def crypto_scalarmult(pk, sk):
+def crypto_scalarmult(sk, pk):
     '''
     Compute a shared secret given a user's secret key and another user's public key.
     '''
@@ -1379,6 +1379,15 @@ def sodium_version_string():
     func = nacl.sodium_version_string
     func.restype = ctypes.c_char_p
     return func()
+
+
+def sodium_memzero(length):
+    '''
+    Zero a block of memory
+    '''
+    buf = ctypes.create_string_buffer(length)
+    nacl.sodium_memzero(buf, length)
+    return buf.raw
 
 
 def crypto_sign_ed25519_pk_to_curve25519(ed25519_pk):
