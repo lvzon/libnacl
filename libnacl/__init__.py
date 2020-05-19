@@ -233,6 +233,20 @@ def crypto_scalarmult_base(sk):
     return pk.raw
 
 
+def crypto_scalarmult(p, sk):
+    '''
+    Compute a shared secret given a user's secret key and another user's public key.
+    '''
+    if len(sk) != crypto_scalarmult_SCALARBYTES:
+        raise ValueError('Invalid secret key')
+    if len(pk) != crypto_scalarmult_BYTES:
+        raise ValueError('Invalid public key')
+    ss = ctypes.create_string_buffer(crypto_scalarmult_BYTES)
+    if nacl.crypto_scalarmult(ss, sk, pk):
+        raise CryptError('Failed to compute scalar product')
+    return ss.raw
+
+
 def crypto_box(msg, nonce, pk, sk):
     '''
     Using a public key and a secret key encrypt the given message. A nonce
