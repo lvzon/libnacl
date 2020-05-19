@@ -189,6 +189,14 @@ if not DOC_RUN:
     except AttributeError:
         HAS_CRYPT_KX = False
 
+    try:
+        crypto_core_hchacha20_INPUTBYTES = nacl.crypto_core_hchacha20_inputbytes()
+        crypto_core_hchacha20_KEYBYTES = nacl.crypto_core_hchacha20_keybytes()
+        crypto_core_hchacha20_OUTPUTBYTES = nacl.crypto_core_hchacha20_outputbytes()
+        HAS_HCHACHA20 = True
+    except AttributeError:
+        HAS_HCHACHA20 = False
+
     # pylint: enable=C0103
 
 # Pubkey defs
@@ -1017,6 +1025,20 @@ def crypto_hash_sha512(msg):
     '''
     hbuf = ctypes.create_string_buffer(crypto_hash_sha512_BYTES)
     nacl.crypto_hash_sha512(hbuf, msg, ctypes.c_ulonglong(len(msg)))
+    return hbuf.raw
+
+# Special purpose hash
+
+def crypto_core_hchacha20(key, val):
+    '''
+    Compute the HChaCha20 hash of a secret key and an input value
+    '''
+    if len(val) != crypto_core_hchacha20_INPUTBYTES:
+        raise ValueError('Invalid input value')
+    if len(key) != crypto_core_hchacha20_KEYBYTES:
+        raise ValueError('Invalid secret key')
+    hbuf = ctypes.create_string_buffer(crypto_core_hchacha20_OUTPUTBYTES)
+    nacl.crypto_core_hchacha20(hbuf, val, key, None)
     return hbuf.raw
 
 # Generic Hash
